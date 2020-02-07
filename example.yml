@@ -1,0 +1,74 @@
+name: 'Sum Random and Multiply Random And Push to DB'
+description: 'This pipeline generates a random integer, passes it to the next task that creates and sums another random integer, repeat for multiplication by 2, then pushes results to a database.'
+author: 'xyz@company.com'
+version: '0.0.1'
+pipeline:
+  executor: 'sequential' # can be `sequential`, `parallel`
+  secrets: '.env' # can be something like `.env`, `secrets.yml`, `src.utils.secrets.PostgresSecrets`
+  task:
+    name: 'create-first-random-number'
+    description: 'Generates a random number'
+    function: 'src.utils.random_num'
+      params:
+        input: null
+        output:
+          -
+            type: 'int'
+            id: 'random-num-1'
+    dependencies: null
+    requires: null
+  task:
+    name: 'sum-first-to-second-random'
+    description: 'Takes input from first task and adds second random'
+    function: 'src.utils.add_num'
+      params:
+        input:
+          -
+            type: 'int'
+            value: 'random-num-1'
+        output:
+          -
+            type: 'int'
+            id: 'random-num-2'
+    dependencies: 'create-first-random-number'
+    requires: null
+  task:
+    name: 'multiply-randoms'
+    description: 'Takes input from final addition step and multiplies by 2'
+    function: 'src.utils.multiply'
+      params:
+        input:
+          -
+            type: 'int'
+            value: 'random-num-2'
+          -
+            type: 'int'
+            value: 2
+        output:
+          type: 'int'
+          id: 'final-number'
+    dependencies: 'sum-first-to-second-random'
+    requires: null
+  task:
+    name: 'push-to-db'
+    description: 'Persists database with final number'
+    function: 'jiggy.PostgresExecute'
+      config:
+        host: 'secrets.pg_host'
+        port: 'secrets.pg_port'
+        username: 'secrets.pg_username'
+        password: 'secrets.pg_password'
+        dbname: 'secrets.pg_dbname'
+      params:
+        input:
+          query: 'INSERT INTO schema.table (num, stamp) VALUES (%s, %s)'
+          data:
+            -
+              type: 'int'
+              value: 'final-number'
+            -
+              type: 'datetime'
+              value: 'now'
+        output: null
+    dependencies: 'multiply-randoms'
+    requires: null
