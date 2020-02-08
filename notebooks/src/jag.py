@@ -94,7 +94,7 @@ class JagTask(dict):
         return function.get("source", None) if function else None
 
     @property
-    def source(self) -> Union[list, None]:
+    def params(self) -> Union[list, None]:
         function = self.function
         return function.get("params", None) if function else None
 
