@@ -7,5 +7,5 @@ class Task(object):
     def __repr__(self):
         return '<JigTask `{}`>'.format(self.name)
 
-    def run(self):
+    def run(self, *args):
         raise NotImplementedError()
