@@ -8,6 +8,9 @@ class Jag(object):
     """DAG creation/association mechanism."""
 
     def __init__(self, location: str):
+        # TODO this should ideally take in an object
+        # the yaml parser we build (includes top level marshalling)
+        # should be the input
         self.location = location
         self.yaml = self.__read_yaml
 
