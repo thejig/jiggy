@@ -1,0 +1,30 @@
+name: Gets todays date, then finds weekday
+author: xyz@company.com
+description: Creates a database, gets a date, pushes to database
+version: 0.0.1
+pipeline:
+  executor: sequential
+  secrets: null
+  tasks:
+  - name: get-current-date
+    description: Gets todays date
+    function:
+      source: src.dates.GetDateTask
+      params: null
+      output:
+      - id: today-date
+        type: datetime
+    dependencies: null
+    requires: null
+  - name: get-weekday
+    description: Gets today's weekday
+    function:
+      source: src.dates.GetWeekdayTask
+      params:
+      - type: datetime
+        value: today-date
+      output:
+        - id: weekday
+          type: str
+    dependencies:
+      - get-current-date
