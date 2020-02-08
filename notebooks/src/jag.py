@@ -119,9 +119,3 @@ class JagTask(dict):
     @property
     def requires(self) -> list:
         return self.get("requires", [])
-
-
-if __name__ == "__main__":
-    jag = Jag("notebooks/no_ext.yml").associate
-
-    import pdb; pdb.set_trace()
