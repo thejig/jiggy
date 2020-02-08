@@ -1,6 +1,9 @@
+import json
+from importlib import import_module
 from typing import Union
 
 import dotenv
+import yaml
 from pathlib import Path
 
 
@@ -15,7 +18,7 @@ class JiggySecrets:
         self._path = self._check_valid(path=path)
 
     def __repr__(self):
-        return '<JiggySecrets `{path}`, `{type}`>'.format(path=self._path)
+        return '<JiggySecrets `{path}`>'.format(path=self._path)
 
     @property
     def path(self):
@@ -40,7 +43,7 @@ class JiggySecrets:
         path = Path(path)
 
         if not path.exists():
-            raise JiggySecretsError('secrets configuration does not exist')
+            raise JiggySecretsError('secrets configuration path does not exist')
 
         if not path.is_file():
             raise JiggySecretsError('secrets configuration must be a file')
@@ -53,30 +56,67 @@ class JiggySecrets:
 
 class EnvSecrets(JiggySecrets):
     """Sublass of ``Secrets`` handling `.env` based secrets"""
-    def __init__(self, path):
+    def __init__(self, path: str):
         super(EnvSecrets, self).__init__(path)
 
     def __repr__(self):
         return '<EnvSecrets `{path}`>'.format(path=self.path)
 
     def load(self) -> dict:
+        """Returns a dictionary containing all secrets"""
         secrets = dotenv.main.dotenv_values(dotenv_path=self.path)
         return secrets
 
 
-    # def from_env(self) -> dict:
-    #     load_dotenv(dotenv_path=self.path)
-    #     import ipdb; ipdb.set_trace()
+class JSONSecrets(JiggySecrets):
+    """Sublass of ``Secrets`` handling `JSON` based secrets"""
+    def __init__(self, path: str):
+        super(JSONSecrets, self).__init__(path)
 
-    # def from_yaml():
-    #     pass
+    def __repr__(self):
+        return '<JSONSecrets `{path}`>'.format(path=self.path)
 
-    # def from_json():
-    #     pass
+    def load(self) -> dict:
+        """Returns a dictionary containing all secrets"""
+        secrets = json.load(open(self.path, 'r'))
+        return secrets
 
-    # def from_pyfile():
-    #     pass
 
-    # def config(self):
-    #     """Abstraction for a secrets configuration class"""
-    #     raise NotImplementedError()
+class YAMLSecrets(JiggySecrets):
+    """Sublass of ``Secrets`` handling `YAML` based secrets"""
+    def __init__(self, path: str):
+        super(YAMLSecrets, self).__init__(path)
+
+    def __repr__(self):
+        return '<YAMLSecrets `{path}`>'.format(path=self.path)
+
+    def load(self) -> dict:
+        """Returns a dictionary containing all secrets"""
+        secrets = yaml.load(open(self.path, 'r'))
+        return secrets
+
+
+class PySecrets(JiggySecrets):
+    """Sublass of ``Secrets`` handling `Python` based secrets"""
+    def __init__(self, path: str):
+        super(PySecrets, self).__init__(path)
+
+    def __repr__(self):
+        return '<PySecrets `{path}`>'.format(path=self.path)
+
+    @staticmethod
+    def _parse_module(path) -> dict:
+        """Returns a dictionary containing `package` and `module` import"""
+        import_path = str(path)
+        package = '.'.join(import_path.split('/')[:-1])
+        module = import_path.split('/')[-1].split('.')[0]
+        return {
+            'package': package,
+            'module': module
+        }
+
+    def load(self) -> dict:
+        """Returns a dictionary containing all secrets"""
+        imports = self._parse_module(self.path)
+        mdl = getattr(import_module(imports['package']), imports['module'])
+        import ipdb; ipdb.set_trace()
