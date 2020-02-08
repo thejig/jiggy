@@ -45,7 +45,7 @@ pipeline:
       - data:
         - type: datetime
           value: today-date
-      - query: INSERT INTO dates (stamp) VALUES (%s)
+      - query: INSERT INTO dates (stamp,) VALUES (%s,)
       output: null
     dependencies:
       - get-current-date
