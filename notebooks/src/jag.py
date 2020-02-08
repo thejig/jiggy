@@ -3,7 +3,7 @@ import yaml
 
 from itertools import chain
 
-from typing import Union
+from typing import Any, Union
 
 
 class Jag(object):
@@ -22,30 +22,30 @@ class Jag(object):
 
             jdag.insert(insertion, Task(task))
 
-        return tuple([x for x in jdag[::-1]])
+        in_place = jdag[::-1]
+
+        return tuple([x for x in in_place])
 
     def _check_dependencies(self, jdag: list, current: dict) -> int:
         """Check dependencies of existing task in JAG."""
         insertion = 0
         for jdag_idx, task in enumerate(jdag):
 
-            all_deps = self._add_if_instance(
-                task.get("dependencies"), task.get("requires")
-            )
+            deps = self._add_if_instance(task.get("dependencies"))
+            reqs = self._add_if_instance(task.get("requires"))
 
-            _deps = chain(all_deps)
+            _deps = chain(deps, reqs)
             if current.get("name") in _deps:
                 insertion = jdag_idx + 1
 
         return insertion
 
     @staticmethod
-    def _add_if_instance(*args) -> list:
+    def _add_if_instance(arg: Any) -> list:
         """Create itertools.chain iterable"""
         arg_out = []
-        for arg in args:
-            if isinstance(arg, list):
-                arg_out.append(arg)
+        if isinstance(arg, list):
+            arg_out = arg
 
         return arg_out
 
@@ -124,3 +124,5 @@ class Task(dict):
 
 if __name__ == "__main__":
     jag = Jag("notebooks/jag_ex.yml").associate
+
+    import pdb; pdb.set_trace()
