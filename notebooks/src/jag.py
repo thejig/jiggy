@@ -67,11 +67,11 @@ class Jag(object):
             return yaml.full_load(in_yaml)
 
 
-class Task(dict):
+class JagTask(dict):
     """Task Object for initializer."""
 
     def __init__(self, task):
-        super(Task, self).__init__(task)
+        super(JagTask, self).__init__(task)
 
     def __repr__(self):
         return "<JigTask `{}`>".format(self.name)
@@ -89,7 +89,7 @@ class Task(dict):
         return self.get("function", {})
 
     @property
-    def source(self) -> Union[str, None]:
+    def source(self) -> str:
         function = self.function
         return function.get("source", None) if function else None
 
@@ -119,18 +119,6 @@ class Task(dict):
     @property
     def requires(self) -> list:
         return self.get("requires", [])
-
-    def run(self):
-        """
-        This will have to interact with import module ?
-
-        >>> # no_ext.yml task get-current-date
-        >>> today_date = Task.run()
-        >>> # guts will have function.source path
-        >>> # and also output.id nad output.type for marshalling
-        >>> # src.date.GetDateTask
-        """
-        raise NotImplementedError()
 
 
 if __name__ == "__main__":
