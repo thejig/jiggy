@@ -11,7 +11,7 @@ pipeline:
   - name: get-current-date
     description: Gets todays date
     function:
-      source: src.dates.GetDateTask
+      source: examples.utils.dates.GetDateTask
       params: null
       output:
       - id: today-date
@@ -21,7 +21,7 @@ pipeline:
   - name: get-weekday
     description: Gets today's weekday
     function:
-      source: src.dates.GetWeekdayTask
+      source: examples.utils.dates.GetWeekdayTask
       params:
       - type: datetime
         value: today-date
@@ -33,7 +33,7 @@ pipeline:
   - name: get-first-letter
     description: Gets today's weekday letter
     function:
-      source: src.dates.GetFirstLetter
+      source: examples.utils.dates.GetFirstLetter
       params:
       - type: string
         value: weekday

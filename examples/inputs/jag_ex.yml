@@ -66,7 +66,7 @@ pipeline:
   - name: get-current-date
     description: Gets todays date
     function:
-      source: src.utils.GetDateTask
+      source: examples.utils.GetDateTask
       params: null
       output:
       - id: today-date
