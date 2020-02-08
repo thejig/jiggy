@@ -20,7 +20,7 @@ class Jag(object):
         for idx, task in enumerate(self.tasks):
             insertion = self._check_dependencies(jdag=jdag, current=task)
 
-            jdag.insert(insertion, Task(task))
+            jdag.insert(insertion, JagTask(task))
 
         in_place = jdag[::-1]
 
