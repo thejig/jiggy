@@ -1,5 +1,5 @@
 import datetime
-from src.task_object import Task
+from notebooks.src.task_object import Task
 
 
 class GetDateTask(Task):
