@@ -11,7 +11,7 @@ pipeline:
   - name: create-first-random-number
     description: Generates a random number
     function:
-      source: src.utils.random_num
+      source: src.utils.RandomNumber
       params: null
       output:
       - id: randum-num-1
@@ -28,21 +28,23 @@ pipeline:
       output:
       - id: randum-num-2
         type: int
-    dependencies: create-first-random-number
+    dependencies:
+      - create-first-random-number
     requires: null
   - name: multiply-randoms-by-2
     description: Takes input from final addition step and multiplies by 2
     function:
+      source: src.utils.multiply
       params:
       - type: int
         value: random-num-2
       - type: int
         value: 2
       output:
-      - id: final-numer
+      - id: final-number
         type: int
-      source: src.utils.multiply
-    dependencies: sum-first-to-second-random
+    dependencies:
+      - sum-first-to-second-random
     requires: null
   - name: push-to-db
     description: Persists database with final number
@@ -62,5 +64,6 @@ pipeline:
           value: now
         query: INSERT INTO schema.table (num, stamp) VALUES (%s, %s)
       output: null
-      dependencies: multiply-randoms
+      dependencies:
+        - multiply-randoms
       requires: null
