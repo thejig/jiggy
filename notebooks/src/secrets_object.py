@@ -12,13 +12,13 @@ class JiggySecretsError(Exception):
     pass
 
 
-class JiggySecrets:
+class Secrets:
     """Class handling secrets"""
     def __init__(self, path: str):
         self._path = self._check_valid(path=path)
 
     def __repr__(self):
-        return '<JiggySecrets `{path}`>'.format(path=self._path)
+        return '<Secrets `{path}`>'.format(path=self._path)
 
     @property
     def path(self):
@@ -51,10 +51,10 @@ class JiggySecrets:
         return path
 
     def load(self) -> dict:
-        raise NotImplementedError()
+        raise NotImplementedError('`load` must be implemented in subclass')
 
 
-class EnvSecrets(JiggySecrets):
+class EnvSecrets(Secrets):
     """Sublass of ``Secrets`` handling `.env` based secrets"""
     def __init__(self, path: str):
         super(EnvSecrets, self).__init__(path)
@@ -68,7 +68,7 @@ class EnvSecrets(JiggySecrets):
         return secrets
 
 
-class JSONSecrets(JiggySecrets):
+class JSONSecrets(Secrets):
     """Sublass of ``Secrets`` handling `JSON` based secrets"""
     def __init__(self, path: str):
         super(JSONSecrets, self).__init__(path)
@@ -82,7 +82,7 @@ class JSONSecrets(JiggySecrets):
         return secrets
 
 
-class YAMLSecrets(JiggySecrets):
+class YAMLSecrets(Secrets):
     """Sublass of ``Secrets`` handling `YAML` based secrets"""
     def __init__(self, path: str):
         super(YAMLSecrets, self).__init__(path)
