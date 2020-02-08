@@ -148,3 +148,6 @@ class JagTask(dict):
     @property
     def requires(self) -> list:
         return self.get("requires", [])
+
+if __name__ == '__main__':
+    jag = Jag('notebooks/jag_ex.yml').associate
