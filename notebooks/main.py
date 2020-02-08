@@ -1,63 +1,90 @@
-from notebooks.src.jag import Jag
 from importlib import import_module
 
-
-def main(fp):  # for the sake of brevity
-    jag = Jag(fp).associate
-
-    _outputs = []
-
-    for jtask in jag:
-        package, module = parse_module(jtask.source)
-
-        executed = _execute(
-            package=package,
-            module=module,
-            jtask=jtask,
-            inputs=_outputs
-        )
-
-        _outputs.append(
-            {jtask.name: executed}
-        )
-
-    return 'Done!'
+from notebooks.src.jag import Jag
 
 
-def parse_module(module_path):
-    package = '.'.join(module_path.split('.')[:-1])
-    module = module_path.split('.')[-1]
+class Runner:
+    """Executor base class for Jiggy."""
 
-    return package, module
+    def __init__(self, path: str):
+        """Constructor for Runner."""
+        self.path = path
+        self.jag = Jag(path)
+
+    def __repr__(self):
+        """Repr method."""
+        return "<Jiggy Runner `{}`>".format(self.path)
+
+    def load(self):
+        raise NotImplementedError()
 
 
-def _execute(
-        package, module, jtask, *args, inputs=None, **kwargs
-):
-    """.."""
-    argument=None
+class SequentialRunner(Runner):
+    """Subclass of Runner for running a sequential pipeline."""
 
-    cls = getattr(import_module(package), module)
-    init_cls = cls(jtask.name)
+    def __init__(self, path: str):
+        """Constructor for Sequential Runner."""
+        super(SequentialRunner, self).__init__(path)
 
-    if jtask.dependencies and inputs:
-        for pinputs in inputs:
-            if pinputs.get(jtask.dependencies[0]):
-                argument = pinputs.get(jtask.dependencies[0])
-            else:
-                continue
+    def __repr__(self):
+        """Repr method."""
+        return "<Sequential Runner `{}`>".format(self.path)
 
-    if argument:
-        output = init_cls.run(argument)
-    else:
-        output = init_cls.run()
+    def main(self):
+        """Runner for Jiggy Pipeline."""
+        jag = self.jag.associate
 
-    print(output)
+        _outputs = []
 
-    return output
+        for jtask in jag:
+            jag_package, jag_module = self.parse_module(jtask.source)
+
+            executed = self._execute(
+                jag_package=jag_package,
+                jag_module=jag_module,
+                jtask=jtask,
+                inputs=_outputs,
+            )
+
+            _outputs.append({jtask.name: executed})
+
+        return "Done!"
+
+    @staticmethod
+    def parse_module(module_path):
+        """Parse input source module to execute."""
+        jag_package = ".".join(module_path.split(".")[:-1])
+        jag_module = module_path.split(".")[-1]
+
+        return jag_package, jag_module
+
+    @staticmethod
+    def _execute(jag_package, jag_module, jtask, *args, inputs=None, **kwargs):
+        """Recursive executor for finding *args and **kwags."""
+        argument = None
+
+        cls = getattr(import_module(jag_package), jag_module)
+        init_cls = cls(jtask.name)
+
+        if jtask.dependencies and inputs:
+            for pinputs in inputs:
+                if pinputs.get(jtask.dependencies[0]):
+                    argument = pinputs.get(jtask.dependencies[0])
+                else:
+                    continue
+
+        if argument:
+            output = init_cls.run(argument)
+        else:
+            output = init_cls.run()
+
+        return output
+
+    def run(self):
+        return self.main()
 
 
 if __name__ == "__main__":
-    main("notebooks/no_ext.yml")
+    myrun = SequentialRunner("notebooks/no_ext.yml").run()
 
     import pdb; pdb.set_trace()

@@ -11,7 +11,7 @@ class Jag(object):
 
     def __init__(self, location: str):
         self.location = location
-        self.yaml = self.__read_yaml
+        self.yaml = self.__read_yaml()
 
     @property
     def associate(self) -> tuple:
@@ -50,9 +50,39 @@ class Jag(object):
         return arg_out
 
     @property
+    def name(self) -> Union[str, None]:
+        """Top level pipeline name."""
+        return self.yaml.get('name', None)
+
+    @property
+    def author(self) -> Union[str, None]:
+        """Top level pipeline author."""
+        return self.yaml.get('author', None)
+
+    @property
+    def version(self) -> Union[str, None]:
+        """Top level pipeline author."""
+        return self.yaml.get('version', None)
+
+    @property
+    def description(self):
+        """Top level pipeline description."""
+        return self.yaml.get('description', None)
+
+    @property
     def pipeline(self) -> dict:
         """Pipeline object in yaml."""
         return self.yaml.get("pipeline", {}) if self else None
+
+    @property
+    def executor(self) -> str:
+        pipeline = self.pipeline
+        return pipeline.get('executor', 'sequential')
+
+    @property
+    def secrets(self) -> Union[str, None]:
+        pipeline = self.pipeline
+        return pipeline.get('secrets', None)
 
     @property
     def tasks(self) -> dict:
@@ -60,7 +90,6 @@ class Jag(object):
         pipeline = self.pipeline
         return pipeline.get("tasks", {}) if pipeline else None
 
-    @property
     def __read_yaml(self):
         """Reader of .yml file."""
         with open(self.location) as in_yaml:
