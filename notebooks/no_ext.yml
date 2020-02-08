@@ -28,3 +28,15 @@ pipeline:
           type: str
     dependencies:
       - get-current-date
+  - name: get-first-letter
+    description: Gets today's weekday letter
+    function:
+      source: src.dates.GetFirstLetter
+      params:
+      - type: string
+        value: weekday
+      output:
+        - id: letter
+          type: str
+    dependencies:
+      - get-weekday
