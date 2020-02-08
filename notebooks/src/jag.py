@@ -27,7 +27,20 @@ class Jag(object):
         """Check dependencies of existing task in JAG."""
         insertion = 0
         for jdag_idx, task in enumerate(jdag):
+
+            # TODO `itertools.chain` depends on iterables for both vars
+            # should we consider marshalling `requires` to be an array as well?
+
+            """
+            >>> chain([], None)
+            >>> TypeError: argument of type 'NoneType' is not iterable
+            
+            >>> chain([], [])
+            >>> <itertools.chain object at 0x10474f908>
+            """
+
             _deps = chain(task.get("dependencies"), task.get("requires"))
+            import pdb; pdb.set_trace()
             if current.get("name") in _deps:
                 insertion = jdag_idx + 1
 
@@ -49,3 +62,7 @@ class Jag(object):
         """Reader of .yml file."""
         with open(self.location) as in_yaml:
             return yaml.full_load(in_yaml)
+
+
+if __name__ == '__main__':
+    jag = Jag('notebooks/jag_ex.yml').associate
