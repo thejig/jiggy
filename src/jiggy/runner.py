@@ -1,6 +1,6 @@
 from importlib import import_module
 
-from notebooks.src.jag import Jag
+from notebooks.src.jag_object import Jag
 
 
 class Runner:
@@ -85,6 +85,6 @@ class SequentialRunner(Runner):
 
 
 if __name__ == "__main__":
-    myrun = SequentialRunner("notebooks/no_ext.yml").run()
+    myrun = SequentialRunner("notebooks/src/example_data/no_ext.yml").run()
 
     import pdb; pdb.set_trace()

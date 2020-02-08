@@ -1,5 +1,0 @@
-pg_host='cred1'
-pg_port='cred2'
-pg_username='cred3'
-pg_password='cred4'
-pg_dbname='cred5'
