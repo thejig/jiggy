@@ -3,7 +3,8 @@ import yaml
 
 from itertools import chain
 
-from typing import Any
+from typing import Union
+
 
 class Jag(object):
     """DAG creation/association mechanism."""
@@ -21,34 +22,32 @@ class Jag(object):
 
             jdag.insert(insertion, Task(task))
 
-        in_place = jdag[::-1]
-
-        import pdb; pdb.set_trace()
-
-        return tuple([x for x in in_place])
+        return tuple([x for x in jdag[::-1]])
 
     def _check_dependencies(self, jdag: list, current: dict) -> int:
         """Check dependencies of existing task in JAG."""
         insertion = 0
         for jdag_idx, task in enumerate(jdag):
-            deps = self._add_if_instance(task.get("dependencies"))
-            reqs = self._add_if_instance(task.get("requires"))
 
-            _deps = chain(deps, reqs)
+            all_deps = self._add_if_instance(
+                task.get("dependencies"), task.get("requires")
+            )
+
+            _deps = chain(all_deps)
             if current.get("name") in _deps:
                 insertion = jdag_idx + 1
 
         return insertion
 
     @staticmethod
-    def _add_if_instance(arg: Any):
+    def _add_if_instance(*args) -> list:
         """Create itertools.chain iterable"""
         arg_out = []
-        if isinstance(arg, list):
-            arg_out = arg
+        for arg in args:
+            if isinstance(arg, list):
+                arg_out.append(arg)
 
         return arg_out
-
 
     @property
     def pipeline(self) -> dict:
@@ -73,54 +72,55 @@ class Task(dict):
         super(Task, self).__init__(task)
 
     def __repr__(self):
-        return '<JigTask `{}`>'.format(self.name)
+        return "<JigTask `{}`>".format(self.name)
 
     @property
-    def name(self):
-        return self.get('name')
+    def name(self) -> str:
+        return self.get("name")
 
     @property
-    def description(self):
-        return self.get('description', None)
+    def description(self) -> Union[str, None]:
+        return self.get("description", None)
 
     @property
-    def function(self):
-        return self.get('function', None)
+    def function(self) -> dict:
+        return self.get("function", {})
 
     @property
-    def source(self):
+    def source(self) -> Union[str, None]:
         function = self.function
-        return function.get('source', None) if function else None
+        return function.get("source", None) if function else None
 
     @property
-    def source(self):
+    def source(self) -> Union[str, None]:
         function = self.function
-        return function.get('params', None) if function else None
+        return function.get("params", None) if function else None
 
     @property
-    def output(self):
-        return self.get('output', {})
+    def output(self) -> dict:
+        return self.get("output", {})
 
     @property
-    def id(self):
+    def id(self) -> Union[list, None]:
         output = self.output
-        return output.get('id', []) if output else None
+        return output.get("id", []) if output else None
 
     @property
-    def type(self):
+    def type(self) -> Union[str, None]:
         output = self.output
-        return output.get('type', None) if output else None
+        return output.get("type", None) if output else None
 
     @property
-    def dependencies(self):
-        return self.get('dependencies', [])
+    def dependencies(self) -> list:
+        return self.get("dependencies", [])
 
     @property
-    def requires(self):
-        return self.get('requires', [])
+    def requires(self) -> list:
+        return self.get("requires", [])
 
     def run(self):
         raise NotImplementedError()
 
-if __name__ == '__main__':
-    jag = Jag('notebooks/jag_ex.yml').associate
+
+if __name__ == "__main__":
+    jag = Jag("notebooks/jag_ex.yml").associate
