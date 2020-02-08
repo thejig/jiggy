@@ -21,10 +21,6 @@ class JiggySecrets:
     def path(self):
         return self._path
 
-    @property
-    def type(self):
-        return self._type
-
     @staticmethod
     def _check_valid(path: str) -> Union[Path, JiggySecretsError]:
         """Checks validity of secrets configuration path provided.
