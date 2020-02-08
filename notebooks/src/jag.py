@@ -40,7 +40,6 @@ class Jag(object):
             """
 
             _deps = chain(task.get("dependencies"), task.get("requires"))
-            import pdb; pdb.set_trace()
             if current.get("name") in _deps:
                 insertion = jdag_idx + 1
 
