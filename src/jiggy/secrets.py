@@ -94,26 +94,3 @@ class YAMLSecrets(Secrets):
         """Returns a dictionary containing all secrets"""
         secrets = yaml.load(open(self.path, 'r'))
         return secrets
-
-
-# class PySecrets(JiggySecrets):
-#     """Sublass of ``Secrets`` handling `Python` based secrets"""
-#     def __init__(self, path: str):
-#         super(PySecrets, self).__init__(path)
-
-#     def __repr__(self):
-#         return '<PySecrets `{path}`>'.format(path=self.path)
-
-#     @staticmethod
-#     def _parse_module(path) -> dict:
-#         """Returns a dictionary containing `package` and `module` import"""
-#         import_path = str(path)
-#         package = '.'.join(import_path.split('/')[:-1])
-#         module = import_path.split('/')[-1].split('.')[0]
-#         return package, module
-
-#     def load(self) -> dict:
-#         """Returns a dictionary containing all secrets"""
-#         package, module = self._parse_module(self.path)
-#         mdl = getattr(import_module(imports['package']), imports['module'])
-#         import ipdb; ipdb.set_trace()

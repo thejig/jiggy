@@ -1,5 +1,5 @@
 import datetime
-from notebooks.src.task_object import Task
+from src.jiggy.task import Task
 
 
 class GetDateTask(Task):

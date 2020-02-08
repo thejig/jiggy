@@ -13,7 +13,7 @@ class Runner:
 
     def __repr__(self):
         """Repr method."""
-        return "<Jiggy Runner `{}`>".format(self.path)
+        return "<Runner `{}`>".format(self.path)
 
     def load(self):
         raise NotImplementedError()
@@ -28,7 +28,7 @@ class SequentialRunner(Runner):
 
     def __repr__(self):
         """Repr method."""
-        return "<Sequential Runner `{}`>".format(self.path)
+        return "<SequentialRunner `{}`>".format(self.path)
 
     def main(self):
         """Runner for Jiggy Pipeline."""
@@ -82,9 +82,3 @@ class SequentialRunner(Runner):
 
     def run(self):
         return self.main()
-
-
-if __name__ == "__main__":
-    myrun = SequentialRunner("notebooks/src/example_data/no_ext.yml").run()
-
-    import pdb; pdb.set_trace()
