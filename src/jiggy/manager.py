@@ -5,7 +5,7 @@ from itertools import chain
 
 from typing import Any, Union
 
-from src.jiggy.task import JagTask
+from src.jiggy.task import JigTask
 
 
 class Manager(object):
@@ -21,7 +21,7 @@ class Manager(object):
         for idx, task in enumerate(self.tasks):
             insertion = self._check_dependencies(jdag=jdag, current=task)
 
-            jdag.insert(insertion, JagTask(task))
+            jdag.insert(insertion, JigTask(task))
 
         in_place = jdag[::-1]
 

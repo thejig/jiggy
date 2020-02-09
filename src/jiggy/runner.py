@@ -2,7 +2,7 @@ from importlib import import_module
 
 from src.jiggy.manager import Manager
 from src.jiggy.state import State
-from src.jiggy.task import JagTask
+from src.jiggy.task import JigTask
 
 from typing import Any
 
@@ -84,7 +84,7 @@ class SequentialRunner(Runner):
         self,
         jag_package: str,
         jag_module: str,
-        jtask: JagTask,
+        jtask: JigTask,
         *args: Any,
         inputs=None,
         **kwargs: Any

@@ -1,11 +1,11 @@
 from typing import Union
 
 
-class JagTask(dict):
+class JigTask(dict):
     """Task Object for initializer."""
 
     def __init__(self, data):
-        super(JagTask, self).__init__(data)
+        super(JigTask, self).__init__(data)
 
     def __repr__(self):
         return "<Task `{}`>".format(self.name)
