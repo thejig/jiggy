@@ -1,11 +1,11 @@
 from typing import Union
 
-class Task(dict):
+
+class JigTask(dict):
     """Task Object for initializer."""
 
-    def __init__(self, name):
-        self.name = name
-        super(Task, self).__init__(name)
+    def __init__(self, data):
+        super(JigTask, self).__init__(data)
 
     def __repr__(self):
         return "<Task `{}`>".format(self.name)
@@ -53,6 +53,17 @@ class Task(dict):
     @property
     def requires(self) -> list:
         return self.get("requires", [])
+
+    def run(self, *args):
+        raise NotImplementedError()
+
+
+class Task(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "<JigTask `{}`>".format(self.name)
 
     def run(self, *args):
         raise NotImplementedError()

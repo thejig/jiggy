@@ -14,11 +14,12 @@ class JiggySecretsError(Exception):
 
 class Secrets:
     """Class handling secrets"""
+
     def __init__(self, path: str):
         self._path = self._check_valid(path=path)
 
     def __repr__(self):
-        return '<Secrets `{path}`>'.format(path=self._path)
+        return "<Secrets `{path}`>".format(path=self._path)
 
     @property
     def path(self):
@@ -43,24 +44,25 @@ class Secrets:
         path = Path(path)
 
         if not path.exists():
-            raise JiggySecretsError('secrets configuration path does not exist')
+            raise JiggySecretsError("secrets configuration path does not exist")
 
         if not path.is_file():
-            raise JiggySecretsError('secrets configuration must be a file')
+            raise JiggySecretsError("secrets configuration must be a file")
 
         return path
 
     def load(self) -> dict:
-        raise NotImplementedError('`load` must be implemented in subclass')
+        raise NotImplementedError("`load` must be implemented in subclass")
 
 
 class EnvSecrets(Secrets):
     """Sublass of ``Secrets`` handling `.env` based secrets"""
+
     def __init__(self, path: str):
         super(EnvSecrets, self).__init__(path)
 
     def __repr__(self):
-        return '<EnvSecrets `{path}`>'.format(path=self.path)
+        return "<EnvSecrets `{path}`>".format(path=self.path)
 
     def load(self) -> dict:
         """Returns a dictionary containing all secrets"""
@@ -70,27 +72,29 @@ class EnvSecrets(Secrets):
 
 class JSONSecrets(Secrets):
     """Sublass of ``Secrets`` handling `JSON` based secrets"""
+
     def __init__(self, path: str):
         super(JSONSecrets, self).__init__(path)
 
     def __repr__(self):
-        return '<JSONSecrets `{path}`>'.format(path=self.path)
+        return "<JSONSecrets `{path}`>".format(path=self.path)
 
     def load(self) -> dict:
         """Returns a dictionary containing all secrets"""
-        secrets = json.load(open(self.path, 'r'))
+        secrets = json.load(open(self.path, "r"))
         return secrets
 
 
 class YAMLSecrets(Secrets):
     """Sublass of ``Secrets`` handling `YAML` based secrets"""
+
     def __init__(self, path: str):
         super(YAMLSecrets, self).__init__(path)
 
     def __repr__(self):
-        return '<YAMLSecrets `{path}`>'.format(path=self.path)
+        return "<YAMLSecrets `{path}`>".format(path=self.path)
 
     def load(self) -> dict:
         """Returns a dictionary containing all secrets"""
-        secrets = yaml.load(open(self.path, 'r'))
+        secrets = yaml.load(open(self.path, "r"))
         return secrets

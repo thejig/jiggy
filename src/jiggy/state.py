@@ -1,12 +1,12 @@
 class State:
-    NONE = 'NONE'
-    SCHEDULED = 'SCHEDULED'
-    PENDING = 'PENDING'
-    PENDING_RETRY = 'PENDING_RETRY'
-    RUNNING = 'RUNNING'
-    SUCCESS = 'SUCCESS'
-    FAILED = 'FAILED'
-    SKIPPED = 'SKIPPED'
+    NONE = "NONE"
+    SCHEDULED = "SCHEDULED"
+    PENDING = "PENDING"
+    PENDING_RETRY = "PENDING_RETRY"
+    RUNNING = "RUNNING"
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    SKIPPED = "SKIPPED"
 
     @classmethod
     def all(cls):
@@ -14,12 +14,12 @@ class State:
 
     @classmethod
     def pending(cls):
-        return set([cls.PENDING, cls.PENDING_RETRY, cls.SCHEDULED])
+        return {[cls.PENDING, cls.PENDING_RETRY, cls.SCHEDULED]}
 
     @classmethod
     def running(cls):
-        return set([cls.RUNNING])
+        return {[cls.RUNNING]}
 
     @classmethod
     def finished(cls):
-        return set([cls.SUCCESS, cls.FAILED, cls.SKIPPED])
+        return {[cls.SUCCESS, cls.FAILED, cls.SKIPPED]}

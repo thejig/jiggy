@@ -1,6 +1,10 @@
 from importlib import import_module
 
-from notebooks.src.jag_object import Jag
+from src.jiggy.manager import Manager
+from src.jiggy.state import State
+from src.jiggy.task import JigTask
+
+from typing import Any
 
 
 class Runner:
@@ -9,7 +13,8 @@ class Runner:
     def __init__(self, path: str):
         """Constructor for Runner."""
         self.path = path
-        self.jag = Jag(path)
+        self.jag = Manager(path)
+        self.pipeline_state = []
 
     def __repr__(self):
         """Repr method."""
@@ -39,7 +44,7 @@ class SequentialRunner(Runner):
         for jtask in jag:
             jag_package, jag_module = self.parse_module(jtask.source)
 
-            executed = self._execute(
+            state, executed = self._execute(
                 jag_package=jag_package,
                 jag_module=jag_module,
                 jtask=jtask,
@@ -47,8 +52,9 @@ class SequentialRunner(Runner):
             )
 
             _outputs.append({jtask.name: executed})
+            self.pipeline_state.append("<{}, {}>".format(jtask, state))
 
-        return "Done!"
+        return self.pipeline_state
 
     @staticmethod
     def parse_module(module_path):
@@ -59,10 +65,32 @@ class SequentialRunner(Runner):
         return jag_package, jag_module
 
     @staticmethod
-    def _execute(jag_package, jag_module, jtask, *args, inputs=None, **kwargs):
-        """Recursive executor for finding *args and **kwags."""
-        argument = None
+    def __cls_run(init_cls: getattr, argument=None):
+        """Initialize function wrapper with state tracking."""
+        state = State.PENDING
+        try:
+            if argument:
+                output = init_cls.run(argument)
+            else:
+                output = init_cls.run()
+            state = State.SUCCESS
+        except Exception:
+            output = None
+            state = State.FAILED
 
+        return state, output
+
+    def _execute(
+        self,
+        jag_package: str,
+        jag_module: str,
+        jtask: JigTask,
+        *args: Any,
+        inputs=None,
+        **kwargs: Any
+    ):
+        """Recursive executor for finding *args and **kwargs."""
+        argument = None
         cls = getattr(import_module(jag_package), jag_module)
         init_cls = cls(jtask.name)
 
@@ -73,12 +101,9 @@ class SequentialRunner(Runner):
                 else:
                     continue
 
-        if argument:
-            output = init_cls.run(argument)
-        else:
-            output = init_cls.run()
+        state, output = self.__cls_run(init_cls=init_cls, argument=argument)
 
-        return output
+        return state, output
 
     def run(self):
         return self.main()
