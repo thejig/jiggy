@@ -4,7 +4,7 @@ from importlib import import_module
 from src.jiggy.manager import Manager
 from src.jiggy.pipeline import Pipeline
 from src.jiggy.state import State
-from src.jiggy.task import JigTask
+from src.jiggy.task import Node
 
 
 class Runner:
@@ -13,9 +13,10 @@ class Runner:
     def __init__(self, path: str):
         """Constructor for Runner."""
         self.path = path
-        self._pipeline = Pipeline(path)
-        self.jag = Manager(self._pipeline)
-        self.pipeline_state = []
+        self.pipeline = Pipeline(self.path)
+        self.dag = Manager(self.pipeline)
+        self.order = self.dag.associate()
+        self.state = []
 
     def __repr__(self):
         """Repr method."""
@@ -35,44 +36,43 @@ class SequentialRunner(Runner):
 
     def __repr__(self):
         """Repr method."""
-        return "<SequentialRunner `{}`>".format(self.path)
+        return "<SequentialRunner `{}`>".format(self.pipeline.name)
 
     def main(self):
         """Runner for Jiggy Pipeline."""
-        jiggy_dag = self.jag.associate()
 
-        _outputs = []
+        outputs = {}
 
-        for jig_task in jiggy_dag:
-            jig_package, jig_module = self.parse_module(jig_task.source)
+        for node in self.order:
+            package, module = self._parse_import(node.source)
 
             state, executed = self._execute(
-                jig_package=jig_package,
-                jig_module=jig_module,
-                jtask=jig_task,
-                inputs=_outputs,
+                package=package,
+                module=module,
+                node=node,
+                inputs=outputs,
             )
 
-            _outputs.append({jig_task.name: executed})
-            self.pipeline_state.append("<{}, {}>".format(jig_task, state))
+            outputs.update({node.name: executed})
+            self.state.append("Task: `{}` -> {}".format(node.name, state))
 
-        return self.pipeline_state
+        return self.state
 
     @staticmethod
-    def parse_module(module_path):
+    def _parse_import(import_path):
         """Parse input source module to execute."""
-        jig_package = ".".join(module_path.split(".")[:-1])
-        jig_module = module_path.split(".")[-1]
+        package = ".".join(import_path.split(".")[:-1])
+        module = import_path.split(".")[-1]
 
-        return jig_package, jig_module
+        return package, module
 
     @staticmethod
-    def __cls_run(init_cls: getattr, argument=None):
+    def __cls_run(init_cls: getattr, arguments=None):
         """Initialize function wrapper with state tracking."""
         state = State.PENDING
         try:
-            if argument:
-                output = init_cls.run(argument)
+            if arguments:
+                output = init_cls.run(*arguments)
             else:
                 output = init_cls.run()
             state = State.SUCCESS
@@ -83,25 +83,25 @@ class SequentialRunner(Runner):
         return state, output
 
     def _execute(
-            self,
-            jig_package: str,
-            jig_module: str,
-            jtask: JigTask,
-            inputs=None
+        self,
+        package: str,
+        module: str,
+        node: Node,
+        inputs=None
     ):
         """Recursive executor for finding *args and **kwargs."""
-        argument = None
-        cls = getattr(import_module(jig_package), jig_module)
-        init_cls = cls(jtask.name)
+        arguments = []
+        cls = getattr(import_module(package), module)
+        init_cls = cls(node.name)
 
-        if jtask.dependencies and inputs:
-            for pinputs in inputs:
-                if pinputs.get(jtask.dependencies[0]):
-                    argument = pinputs.get(jtask.dependencies[0])
+        if node.dependencies and inputs:
+            for input_id in inputs.keys():
+                if input_id in node.dependencies:
+                    arguments.append(inputs[input_id])
                 else:
                     continue
 
-        state, output = self.__cls_run(init_cls=init_cls, argument=argument)
+        state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
         return state, output
 

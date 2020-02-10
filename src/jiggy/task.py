@@ -2,14 +2,14 @@
 from typing import Union
 
 
-class JigTask(dict):
+class Node(dict):
     """Task Object for initializer."""
 
     def __init__(self, data):
-        super(JigTask, self).__init__(data)
+        super(Node, self).__init__(data)
 
     def __repr__(self):
-        return "<Task `{}`>".format(self.name)
+        return "<Node `{}`>".format(self.name)
 
     @property
     def name(self) -> str:
@@ -79,7 +79,7 @@ class Task(object):
 
     def __repr__(self):
         """Repr method."""
-        return "<JigTask `{}`>".format(self.name)
+        return "<Task `{}`>".format(self.name)
 
     def run(self, *args):
         """Abstract runner for Task."""

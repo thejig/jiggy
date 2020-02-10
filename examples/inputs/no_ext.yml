@@ -1,9 +1,10 @@
 name: Gets todays date, then finds weekday
 author: xyz@company.com
-description: Creates a database, gets a date, pushes to database
+description: Creates a database, gets a date, gets first letter of weekday
 version: 0.0.1
+
 pipeline:
-  executor: sequential
+  runner: sequential
   secrets:
     location: .env
     source: jiggy.EnvSecrets
@@ -30,15 +31,19 @@ pipeline:
         type: str
     dependencies:
       - get-current-date
+    requires: null
   - name: get-first-letter
     description: Gets today's weekday letter
     function:
       source: examples.utils.dates.GetFirstLetter
       params:
-      - type: string
+      - type: str
         value: weekday
+      - type: int
+        value: 4
       output:
         - id: letter
           type: str
     dependencies:
       - get-weekday
+    requires: null
