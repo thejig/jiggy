@@ -7,7 +7,7 @@ tests:
 	tox
 
 .PHONY: lint
-link:
+lint:
 	tox -e pylint
 
 .PHONY: flake
