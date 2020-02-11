@@ -18,8 +18,8 @@ class Secrets:
     """Class handling secrets"""
 
     def __init__(self, pipeline: Pipeline):
-        self._source = pipeline.secrets['source']
-        self._location = self._check_valid(pipeline.secrets['location'])
+        self._source = pipeline.secrets.get('source')
+        self._location = self._check_valid(pipeline.secrets.get('location'))
 
     def __repr__(self):
         return "<Secrets `{source}`:`{location}`>".format(
