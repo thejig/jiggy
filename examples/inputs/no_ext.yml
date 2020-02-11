@@ -17,7 +17,6 @@ pipeline:
       output:
       - id: today-date
         type: datetime
-    dependencies: null
     requires: null
   - name: get-weekday
     description: Gets today's weekday
@@ -26,11 +25,10 @@ pipeline:
       params:
       - type: datetime
         value: today-date
+        dependency: get-current-date
       output:
       - id: weekday
         type: str
-    dependencies:
-      - get-current-date
     requires: null
   - name: get-first-letter
     description: Gets today's weekday letter
@@ -39,11 +37,10 @@ pipeline:
       params:
       - type: str
         value: weekday
+        dependency: get-weekday
       - type: int
         value: 4
       output:
-        - id: letter
-          type: str
-    dependencies:
-      - get-weekday
+      - id: letter
+        type: str
     requires: null

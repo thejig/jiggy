@@ -12,6 +12,7 @@ class Runner:
 
     def __init__(self, path: str):
         """Constructor for Runner."""
+        self.path = path
         self.pipeline = Pipeline(path)
         self.dag = Manager(self.pipeline)
         self.state = []
@@ -45,10 +46,7 @@ class SequentialRunner(Runner):
             pkg, mdl = self._parse_import(node.source)
 
             state, executed = self._execute(
-                pkg=pkg,
-                mdl=mdl,
-                node=node,
-                inputs=outputs,
+                pkg=pkg, mdl=mdl, node=node, inputs=outputs,
             )
 
             outputs.update({node.name: executed})
@@ -80,22 +78,18 @@ class SequentialRunner(Runner):
 
         return state, output
 
-    def _execute(
-        self,
-        pkg: str,
-        mdl: str,
-        node: Node,
-        inputs=None
-    ):
+    def _execute(self, pkg: str, mdl: str, node: Node, inputs=None):
         """Recursive executor for finding *args and **kwargs."""
         arguments = []
         cls = getattr(import_module(pkg), mdl)
         init_cls = cls(node.name)
 
-        if node.dependencies and inputs:
-            for input_id in inputs.keys():
-                if input_id in node.dependencies:
-                    arguments.append(inputs[input_id])
+        if inputs:
+            for param in node.params:
+                if param.get("dependency") in inputs.keys():
+                    arguments.append(inputs[param.get("dependency")])
+                elif not param.get("dependency"):
+                    arguments.append(param.get("value"))
                 else:
                     continue
 
