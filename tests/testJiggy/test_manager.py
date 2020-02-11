@@ -10,7 +10,7 @@ class TestPipeline(TestCase):
     def __init__(self, path):
         """Construct TestCase."""
         self.test_pipeline = Pipeline(
-            location="testData/minimal_test_case.yml"
+            path="testData/minimal_test_case.yml"
         )
         super(TestPipeline, self).__init__(path)
 
@@ -26,10 +26,10 @@ class TestPipeline(TestCase):
         assert self.test_pipeline.description == (
             "Creates a database, gets a date, pushes to database"
         )
-        assert isinstance(self.test_pipeline.pipeline, dict)
+        assert isinstance(self.test_pipeline.info, dict)
         assert self.test_pipeline.secrets == {
             "location": ".env",
             "source": "jiggy.EnvSecrets"
         }
         assert isinstance(self.test_pipeline.tasks, list)
-        assert self.test_pipeline.executor == "sequential"
+        assert self.test_pipeline.runner == "sequential"
