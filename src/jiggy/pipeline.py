@@ -8,7 +8,7 @@ class Pipeline(object):
     """Create facade object with accesses."""
 
     def __init__(self, path: str):
-        self.conf = self._read(path=path)
+        self.config = self._read(path=path)
 
     def __repr__(self):
         return "<Pipeline `{}`>".format(self.name)
@@ -16,48 +16,37 @@ class Pipeline(object):
     @property
     def name(self) -> Union[str, None]:
         """Top level pipeline name."""
-        return self.conf.get("name", None)
+        return self.config.get("name", None)
 
     @property
     def author(self) -> Union[str, None]:
         """Top level pipeline author."""
-        return self.conf.get("author", None)
+        return self.config.get("author", None)
 
     @property
     def version(self) -> Union[str, None]:
         """Top level pipeline author."""
-        return self.conf.get("version", None)
+        return self.config.get("version", None)
 
     @property
     def description(self) -> Union[str, None]:
         """Top level pipeline description."""
-        return self.conf.get("description", None)
-
-    @property
-    def meta(self):
-        """Group all metadata together"""
-        meta = {
-            'name': self.name,
-            'author': self.author,
-            'description': self.description,
-            'version': self.version
-        }
-        return meta
+        return self.config.get("description", None)
 
     @property
     def info(self) -> dict:
         """Pipeline object in yaml."""
-        return self.conf.get("pipeline", {}) if self else None
+        return self.config.get("pipeline", {}) if self else None
 
     @property
     def runner(self) -> str:
         """Pipeline executor type."""
-        return self.info.get("runner", "sequential")
+        return self.info.get("runner", "sequential") if self.info else None
 
     @property
     def secrets(self) -> Union[str, None]:
-        """Pipeline secrets configuration."""
-        return self.info.get("secrets", None)
+        """Pipeline secrets configiguration."""
+        return self.info.get("secrets", None) if self.info else None
 
     @property
     def tasks(self) -> list:

@@ -44,11 +44,11 @@ class SequentialRunner(Runner):
         outputs = {}
 
         for node in self.order:
-            package, module = self._parse_import(node.source)
+            pkg, mdl = self._parse_import(node.source)
 
             state, executed = self._execute(
-                package=package,
-                module=module,
+                pkg=pkg,
+                mdl=mdl,
                 node=node,
                 inputs=outputs,
             )
@@ -61,10 +61,10 @@ class SequentialRunner(Runner):
     @staticmethod
     def _parse_import(import_path):
         """Parse input source module to execute."""
-        package = ".".join(import_path.split(".")[:-1])
-        module = import_path.split(".")[-1]
+        pkg = ".".join(import_path.split(".")[:-1])
+        mdl = import_path.split(".")[-1]
 
-        return package, module
+        return pkg, mdl
 
     @staticmethod
     def __cls_run(init_cls: getattr, arguments=None):
@@ -84,8 +84,8 @@ class SequentialRunner(Runner):
 
     def _execute(
         self,
-        package: str,
-        module: str,
+        pkg: str,
+        mdl: str,
         node: Node,
         inputs=None
     ):
