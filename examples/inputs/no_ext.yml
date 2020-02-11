@@ -6,7 +6,7 @@ version: 0.0.1
 pipeline:
   runner: sequential
   secrets:
-    location: .env
+    location: examples/secrets/.env-example
     source: jiggy.EnvSecrets
   tasks:
   - name: get-current-date

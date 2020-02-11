@@ -8,10 +8,15 @@ class Pipeline(object):
     """Create facade object with accesses."""
 
     def __init__(self, path: str):
-        self.config = self._read(path=path)
+        self._path = path
+        self.config = self._read(path=self._path)
 
     def __repr__(self):
         return "<Pipeline `{}`>".format(self.name)
+
+    @property
+    def path(self):
+        return self._path
 
     @property
     def name(self) -> Union[str, None]:

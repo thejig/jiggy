@@ -28,7 +28,7 @@ class TestPipeline(TestCase):
         )
         assert isinstance(self.test_pipeline.info, dict)
         assert self.test_pipeline.secrets == {
-            "location": ".env",
+            "location": "testData/secrets_test.env",
             "source": "jiggy.EnvSecrets"
         }
         assert isinstance(self.test_pipeline.tasks, list)
