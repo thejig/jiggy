@@ -46,10 +46,7 @@ class SequentialRunner(Runner):
             pkg, mdl = self._parse_import(node.source)
 
             state, executed = self._execute(
-                pkg=pkg,
-                mdl=mdl,
-                node=node,
-                inputs=outputs,
+                pkg=pkg, mdl=mdl, node=node, inputs=outputs,
             )
 
             outputs.update({node.name: executed})
@@ -81,13 +78,7 @@ class SequentialRunner(Runner):
 
         return state, output
 
-    def _execute(
-        self,
-        pkg: str,
-        mdl: str,
-        node: Node,
-        inputs=None
-    ):
+    def _execute(self, pkg: str, mdl: str, node: Node, inputs=None):
         """Recursive executor for finding *args and **kwargs."""
         arguments = []
         cls = getattr(import_module(pkg), mdl)
@@ -95,16 +86,14 @@ class SequentialRunner(Runner):
 
         if inputs:
             for param in node.params:
-                if param.get('dependency') in inputs.keys():
-                    arguments.append(inputs[param.get('dependency')])
-                elif not param.get('dependency'):
-                    arguments.append(param.get('value'))
+                if param.get("dependency") in inputs.keys():
+                    arguments.append(inputs[param.get("dependency")])
+                elif not param.get("dependency"):
+                    arguments.append(param.get("value"))
                 else:
                     continue
 
-        state, output = self.__cls_run(
-            init_cls=init_cls, arguments=arguments
-        )
+        state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
         return state, output
 
