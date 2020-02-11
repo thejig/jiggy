@@ -5,9 +5,7 @@ from src.jiggy.manager import Manager
 from src.jiggy.task import Node
 from src.jiggy.pipeline import Pipeline
 from src.jiggy.state import State
-from src.jiggy.secrets import (
-
-)
+from src.jiggy.secrets import Secrets
 
 class Runner:
     """Executor base class for Jiggy."""
