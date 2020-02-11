@@ -12,6 +12,7 @@ class Runner:
 
     def __init__(self, path: str):
         """Constructor for Runner."""
+        self.path = path
         self.pipeline = Pipeline(path)
         self.dag = Manager(self.pipeline)
         self.state = []
@@ -92,14 +93,18 @@ class SequentialRunner(Runner):
         cls = getattr(import_module(pkg), mdl)
         init_cls = cls(node.name)
 
-        if node.dependencies and inputs:
-            for input_id in inputs.keys():
-                if input_id in node.dependencies:
-                    arguments.append(inputs[input_id])
+        if inputs:
+            for param in node.params:
+                if param.get('dependency') in inputs.keys():
+                    arguments.append(inputs[param.get('dependency')])
+                elif not param.get('dependency'):
+                    arguments.append(param.get('value'))
                 else:
                     continue
 
-        state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
+        state, output = self.__cls_run(
+            init_cls=init_cls, arguments=arguments
+        )
 
         return state, output
 

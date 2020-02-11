@@ -45,7 +45,7 @@ class Pipeline(object):
 
     @property
     def secrets(self) -> Union[str, None]:
-        """Pipeline secrets configiguration."""
+        """Pipeline secrets configuration."""
         return self.info.get("secrets", None) if self.info else None
 
     @property

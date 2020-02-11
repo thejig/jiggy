@@ -1,4 +1,5 @@
 class State:
+    """State values."""
     NONE = "NONE"
     SCHEDULED = "SCHEDULED"
     PENDING = "PENDING"
@@ -6,6 +7,7 @@ class State:
     RUNNING = "RUNNING"
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
+    FAILED_UPSTREAM = 'FAILED_UPSTREAM'
     SKIPPED = "SKIPPED"
 
     @classmethod

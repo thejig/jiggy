@@ -6,9 +6,11 @@ class Node(dict):
     """Task Object for initializer."""
 
     def __init__(self, data):
+        """Constructor for Node."""
         super(Node, self).__init__(data)
 
     def __repr__(self):
+        """Representation of Node."""
         return "<Node `{}`>".format(self.name)
 
     @property
@@ -36,7 +38,7 @@ class Node(dict):
     def params(self) -> Union[list, None]:
         """Assign `task.function.params` property."""
         function = self.function
-        return function.get("params", None) if function else None
+        return function.get("params", []) if function else None
 
     @property
     def output(self) -> dict:
@@ -54,11 +56,6 @@ class Node(dict):
         """Assign `task.output.type` property."""
         output = self.output
         return output.get("type", None) if output else None
-
-    @property
-    def dependencies(self) -> list:
-        """Assign `task.dependencies` property."""
-        return self.get("dependencies", [])
 
     @property
     def requires(self) -> list:
