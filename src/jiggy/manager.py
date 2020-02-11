@@ -4,38 +4,41 @@ from itertools import chain
 from typing import Any
 
 from src.jiggy.pipeline import Pipeline
-from src.jiggy.task import JigTask
+from src.jiggy.task import Node
 
 
 class Manager(object):
     """DAG creation/association mechanism."""
 
     def __init__(self, pipeline: Pipeline):
-        self._pipeline = pipeline
+        self.pipeline = pipeline
+
+    @property
+    def order(self):
+        return self.associate()
 
     def associate(self) -> tuple:
         """Associate dependencies and tasks for order."""
-        jdag = []
-        for task in self._pipeline.tasks:
-            insertion = self.parse_dependencies(jdag=jdag, current=task)
 
-            jdag.insert(insertion, JigTask(task))
+        dag = []
+        for task in self.pipeline.tasks:
+            insertion = self.parse_dependencies(dag=dag, current=task)
+            dag.insert(insertion, Node(task))
 
-        in_place_tasks = jdag[::-1]
+        in_place_tasks = dag[::-1]
 
         return tuple([task for task in in_place_tasks])
 
-    def parse_dependencies(self, jdag: list, current: dict) -> int:
+    def parse_dependencies(self, dag: list, current: dict) -> int:
         """Check dependencies of existing task in JAG."""
         insertion = 0
-        for jdag_idx, task in enumerate(jdag):
-
+        for idx, task in enumerate(dag):
             deps = self._add_if_instance(task.get("dependencies"))
             reqs = self._add_if_instance(task.get("requires"))
 
             _deps = chain(deps, reqs)
             if current.get("name") in _deps:
-                insertion = jdag_idx + 1
+                insertion = idx + 1
 
         return insertion
 

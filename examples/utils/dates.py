@@ -25,5 +25,5 @@ class GetFirstLetter(Task):
         self._name = name
         super(GetFirstLetter, self).__init__(name)
 
-    def run(self, x):
-        return x[0]
+    def run(self, x, y):
+        return f'{x[0]}_{y}'
