@@ -44,3 +44,26 @@ pipeline:
       - id: letter
         type: str
     requires: null
+  - name: print-somethin
+    description: Print something
+    function:
+      source: examples.utils.string_manipulation.PrintThis
+      params:
+      - type: str
+        value: 'THIS PIPELINE IS BONKERS'
+      output: null
+    requires: null
+  - name: lower-text
+    description: Takes capitalized letters and lowers them
+    function:
+      source: examples.utils.string_manipulation.LowerText
+      params:
+      - type: str
+        value: letter
+        dependency: get-first-letter
+      - type: str
+        value: 'BONKERS'
+      output:
+      - id: finalized
+        type: str
+    requires: print-somethin
