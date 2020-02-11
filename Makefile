@@ -1,3 +1,5 @@
+PWD := $(shell pwd)
+
 .PHONY: black
 black:
 	tox -e black
@@ -13,6 +15,13 @@ lint:
 .PHONY: flake
 flake:
 	tox -e flake8
+
+
+.PHONY: pre-commit
+pre-commit:
+	tox -e pylint
+	tox -e flake8
+	tox -vv
 
 .PHONY: clean
 clean:
