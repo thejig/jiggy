@@ -13,6 +13,10 @@ class Manager(object):
     def __init__(self, pipeline: Pipeline):
         self.pipeline = pipeline
 
+    @property
+    def order(self):
+        return self.associate()
+
     def associate(self) -> tuple:
         """Associate dependencies and tasks for order."""
 
