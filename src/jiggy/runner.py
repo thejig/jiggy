@@ -1,11 +1,13 @@
 """Jiggy Runner methods."""
 from importlib import import_module
 
+from src.jiggy.inspector import Inspector
 from src.jiggy.manager import Manager
-from src.jiggy.task import Node
 from src.jiggy.pipeline import Pipeline
 from src.jiggy.state import State
 from src.jiggy.secrets import Secrets
+from src.jiggy.task import Node
+
 
 class Runner:
     """Executor base class for Jiggy."""
@@ -65,8 +67,7 @@ class SequentialRunner(Runner):
 
     @staticmethod
     def __cls_run(init_cls: getattr, arguments=None):
-        """Initialize function wrapper with state tracking."""
-        state = State.PENDING
+        """Initialize function wrapper with state tracking. -> raises Inspector"""
         try:
             if arguments:
                 output = init_cls.run(*arguments)
@@ -82,21 +83,31 @@ class SequentialRunner(Runner):
     def _execute(self, pkg: str, mdl: str, node: Node, inputs=None):
         """Recursive executor for finding *args and **kwargs."""
         arguments = []
+        inspector = Inspector(node=node)
+
         cls = getattr(import_module(pkg), mdl)
         init_cls = cls(node.name)
 
         if inputs:
             for param in node.params:
                 if param.get("dependency") in inputs.keys():
-                    arguments.append(inputs[param.get("dependency")])
+                    arguments.append(
+                        inspector.inspect_param(
+                            param=param, received=inputs[param.get("dependency")]
+                        )
+                    )
                 elif not param.get("dependency"):
-                    arguments.append(param.get("value"))
+                    arguments.append(
+                        inspector.inspect_param(
+                            param=param, received=param.get("value")
+                        )
+                    )
                 else:
                     continue
 
         state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
-        return state, output
+        return state, inspector.inspect_output(node=node, output=output)
 
     def run(self):
         """Abstract runner for Sequential."""
