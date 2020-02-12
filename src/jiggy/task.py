@@ -44,7 +44,7 @@ class Node(dict):
     def output(self) -> dict:
         """Assign `task.output` property."""
         function = self.function
-        return function.get("output", {})
+        return function.get("output", {}) if function else None
 
     @property
     def output_id(self) -> Union[list, None]:
