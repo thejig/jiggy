@@ -16,8 +16,8 @@ pipeline:
       source: examples.utils.dates.GetDateTask
       params: null
       output:
-      - id: today-date
-        type: datetime
+        id: today-date
+        type: datetime.datetime
     requires: print-somethin
 
   - name: get-weekday

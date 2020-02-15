@@ -40,16 +40,16 @@ class Inspector(object):
 
         return received
 
-    def inspect_output(self, node: Node, output: Any):
+    def inspect_output(self, node: Node, fout: Any):
         """Inspector helper for output and type."""
-        if not output:
+        if not fout:
             return None
 
-        if not isinstance(output, eval(node.output.get("type"))):
+        if not isinstance(fout, eval(node.output.get("type"))):
             raise InspectorOutputException(
                 "{} function output: {} does not match declared type: {}".format(
-                    self._node, output, node.output.get("type")
+                    self._node, fout, node.output.get("type")
                 )
             )
 
-        return output
+        return fout

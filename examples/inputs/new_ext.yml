@@ -46,8 +46,8 @@ pipeline:
       source: examples.utils.dates.GetDateTask
       params: null
       output:
-      - id: today-date
-        type: datetime
+        id: today-date
+        type: datetime.datetime
     requires: print-somethin-2
 
   - name: get-first-letter
@@ -61,7 +61,7 @@ pipeline:
       - type: int
         value: 4
       output:
-      - id: letter
+        id: letter
         type: str
     requires: print-somethin
 
@@ -74,6 +74,6 @@ pipeline:
         value: today-date
         dependency: get-current-date
       output:
-      - id: weekday
+        id: weekday
         type: str
     requires: null

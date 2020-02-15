@@ -106,8 +106,14 @@ class SequentialRunner(Runner):
 
         state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
-        return state, inspector.inspect_output(node=node, output=output)
+        return state, inspector.inspect_output(node=node, fout=output)
 
     def run(self):
         """Abstract runner for Sequential."""
         return self.main()
+
+
+if __name__ == '__main__':
+    myrun = SequentialRunner(path="examples/inputs/new_ext.yml").run()
+
+    import pdb; pdb.set_trace()
