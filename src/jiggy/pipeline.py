@@ -61,5 +61,5 @@ class Pipeline(object):
     @staticmethod
     def _read(path: str):
         """Reader of .yml file."""
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             return yaml.full_load(f)

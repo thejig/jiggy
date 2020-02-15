@@ -1,10 +1,8 @@
 """Create JAG Object."""
 from collections import OrderedDict
 from collections import deque
-from copy import copy, deepcopy
-from itertools import chain
+from copy import deepcopy
 
-from typing import Any
 
 from src.jiggy.pipeline import Pipeline
 from src.jiggy.task import Node
@@ -13,7 +11,7 @@ from src.jiggy.task import Node
 class Manager(object):
     """DAG creation/association mechanism."""
 
-    library = dict()
+    library = {}
 
     def __init__(self, pipeline: Pipeline):
         self.reset_graph()
@@ -32,7 +30,7 @@ class Manager(object):
         if not graph:
             graph = self.graph
         if node.name in graph:
-            raise KeyError('node %s already exists' % node.name)
+            raise KeyError("node %s already exists" % node.name)
 
         graph[node.name] = set()
 
@@ -47,14 +45,14 @@ class Manager(object):
         if not graph:
             graph = self.graph
         if ind_node not in graph or dep_node not in graph:
-            raise KeyError('one or more nodes do not exist in graph')
+            raise KeyError("one or more nodes do not exist in graph")
         test_graph = deepcopy(graph)
         test_graph[ind_node].add(dep_node)
         is_valid, message = self.validate(test_graph)
         if is_valid:
             graph[ind_node].add(dep_node)
         else:
-            raise Exception('FUCK YOU')
+            raise Exception("FUCK YOU")
 
     def predecessors(self, node, graph=None):
         """ Returns a list of all predecessors of the given node """
@@ -67,7 +65,7 @@ class Manager(object):
         if graph is None:
             graph = self.graph
         if node not in graph:
-            raise KeyError('node %s is not in graph' % node)
+            raise KeyError("node %s is not in graph" % node)
         return list(graph[node])
 
     def all_downstreams(self, node, graph=None):
@@ -87,10 +85,7 @@ class Manager(object):
                     nodes.append(downstream_node)
             i += 1
         return list(
-            filter(
-                lambda node: node in nodes_seen,
-                self.topological_sort(graph=graph)
-            )
+            filter(lambda node: node in nodes_seen, self.topological_sort(graph=graph))
         )
 
     def all_leaves(self, graph=None):
@@ -109,7 +104,7 @@ class Manager(object):
             self.add_node(new_node)
         for ind_node, dep_nodes in graph_dict.items():
             if not isinstance(dep_nodes, list):
-                raise TypeError('dict values must be lists')
+                raise TypeError("dict values must be lists")
             for dep_node in dep_nodes:
                 self.add_edge(ind_node, dep_node)
 
@@ -131,13 +126,12 @@ class Manager(object):
         """ Returns (Boolean, message) of whether DAG is valid. """
         graph = graph if graph is not None else self.graph
         if len(self.ind_nodes(graph)) == 0:
-            return (False, 'no independent nodes detected')
+            return (False, "no independent nodes detected")
         try:
             self.topological_sort(graph)
         except ValueError:
-            return (False, 'failed topological sort')
-        return (True, 'valid')
-
+            return (False, "failed topological sort")
+        return (True, "valid")
 
     def something(self):
         for task_name, task in self.library.items():
@@ -145,8 +139,8 @@ class Manager(object):
             upstreams = set()
             if task.params:
                 for param in task.params:
-                    if param.get('dependency') in set(self.library.keys()):
-                        upstreams.add(param.get('dependency'))
+                    if param.get("dependency") in set(self.library.keys()):
+                        upstreams.add(param.get("dependency"))
             if task.requires:
                 upstreams.add(task.requires)
 
@@ -189,7 +183,7 @@ class Manager(object):
         if len(l) == len(graph):
             return l
         else:
-            raise ValueError('graph is not acyclic')
+            raise ValueError("graph is not acyclic")
 
     def size(self):
         return len(self.graph)
