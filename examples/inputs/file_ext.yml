@@ -1,0 +1,40 @@
+name: Writes 1, 2, 3 to different files
+author: xyz@company.com
+description: Creates 3 different files with 1, 2, 3 respectively written on them
+version: 0.0.1
+
+pipeline:
+  runner: sequential
+  secrets:
+    location: examples/secrets/.env-example
+    source: jiggy.EnvSecrets
+  tasks:
+
+  - name: create-db
+    description: Creates an SQLiteDB table
+    function:
+      source: examples.utils.db.CreateTable
+      params: null
+      output: null
+    requires: null
+
+  - name: random-number
+    description: Returns a random number
+    function:
+      source: examples.utils.db.GetRandomNumber
+      params: null
+      output:
+        id: number
+        type: int
+    requires: null
+
+  - name: persist-db
+    description: Persists number to databse
+    function:
+      source: examples.utils.db.PersistDatabase
+      params:
+      - type: int
+        value: number
+        dependency: random-number
+      output: null
+    requires: create-db

@@ -60,6 +60,8 @@ class SequentialRunner(Runner):
             node.got = executed
             node.state = state
 
+            print(node.got)
+
             outputs.update({node.name: node.got})
             self.state.append("Task: `{}` -> {}".format(node, state))
 
@@ -82,7 +84,8 @@ class SequentialRunner(Runner):
             else:
                 output = init_cls.run()
             state = State.SUCCESS
-        except Exception:
+        except Exception as exc:
+            print(exc)
             output = None
             state = State.FAILED
 
