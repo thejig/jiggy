@@ -34,8 +34,8 @@ pipeline:
       source: examples.utils.db.PrintNumber
       params:
       - type: int
-      - value: number
-      - dependency: random-number
+        value: number
+        dependency: random-number
       output: null
     requires: null
 

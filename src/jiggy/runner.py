@@ -55,8 +55,6 @@ class SequentialRunner(Runner):
             node.got = executed
             node.state = state
 
-            print(node.got)
-
             outputs.update({node.name: node.got})
             self.state.append("Task: `{}` -> {}".format(node, state))
 
@@ -80,7 +78,6 @@ class SequentialRunner(Runner):
                 output = init_cls.run()
             state = State.SUCCESS
         except Exception as exc:
-            print(init_cls, exc)
             output = None
             state = State.FAILED
 
@@ -120,8 +117,6 @@ class SequentialRunner(Runner):
 
 
 if __name__ == "__main__":
-    myrun = SequentialRunner(path="examples/inputs/new_ext.yml").run()
+    myrun = SequentialRunner(path="examples/inputs/file_ext.yml").run()
 
-    import pdb
-
-    pdb.set_trace()
+    import pdb; pdb.set_trace()
