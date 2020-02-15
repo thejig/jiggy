@@ -123,12 +123,10 @@ class SequentialRunner(Runner):
         """
 
         print(logo)
-        print("-"*100)
         print("Name: \t\t", self.pipeline.name)
         print("Author: \t", self.pipeline.author)
         print("Description: \t", self.pipeline.description)
         print("Version: \t", self.pipeline.version)
-        print("-"*100)
         print("\n")
 
         return self.main()
