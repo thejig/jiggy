@@ -70,7 +70,7 @@ pipeline:
     function:
       source: examples.utils.dates.GetWeekdayTask
       params:
-      - type: datetime
+      - type: datetime.datetime
         value: today-date
         dependency: get-current-date
       output:
