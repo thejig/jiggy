@@ -38,7 +38,7 @@ class Node(dict):
         return function.get("source", None) if function else None
 
     @property
-    def params(self) -> Union[list, None]:
+    def params(self) -> list:
         """Assign `task.function.params` property."""
         function = self.function
         return function.get("params", []) if function else None
@@ -46,7 +46,8 @@ class Node(dict):
     @property
     def output(self) -> dict:
         """Assign `task.output` property."""
-        return self.get("output", {})
+        function = self.function
+        return function.get("output", {}) if function else None
 
     @property
     def output_id(self) -> Union[list, None]:

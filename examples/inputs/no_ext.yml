@@ -25,11 +25,11 @@ pipeline:
     function:
       source: examples.utils.dates.GetWeekdayTask
       params:
-      - type: datetime
+      - type: datetime.datetime
         value: today-date
         dependency: get-current-date
       output:
-      - id: weekday
+        id: weekday
         type: str
     requires: null
 
@@ -44,7 +44,7 @@ pipeline:
       - type: int
         value: 4
       output:
-      - id: letter
+        id: letter
         type: str
     requires: null
 
@@ -69,6 +69,6 @@ pipeline:
       - type: str
         value: 'BONKERS'
       output:
-      - id: finalized
+        id: finalized
         type: str
     requires: null
