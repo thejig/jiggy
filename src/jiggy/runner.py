@@ -51,12 +51,7 @@ class SequentialRunner(Runner):
         for node_name in self.dag.associate():
             node = self.dag.library.get(node_name)
             pkg, mdl = self._parse_import(node.source)
-            state, executed = self._execute(
-                pkg=pkg,
-                mdl=mdl,
-                node=node,
-                inputs=outputs
-            )
+            state, executed = self._execute(pkg=pkg, mdl=mdl, node=node, inputs=outputs)
             node.got = executed
             node.state = state
 
@@ -103,9 +98,17 @@ class SequentialRunner(Runner):
             for param in node.params:
                 dependency = param.get("dependency")
                 if dependency:
-                    arguments.append(inputs.get(dependency))
+                    arguments.append(
+                        inspector.inspect_param(
+                            param=param, received=inputs.get(dependency)
+                        )
+                    )
                 elif not dependency:
-                    arguments.append(param.get("value"))
+                    arguments.append(
+                        inspector.inspect_param(
+                            param=param, received=param.get("value")
+                        )
+                    )
 
         state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
@@ -116,7 +119,9 @@ class SequentialRunner(Runner):
         return self.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     myrun = SequentialRunner(path="examples/inputs/new_ext.yml").run()
 
-    import pdb; pdb.set_trace()
+    import pdb
+
+    pdb.set_trace()
