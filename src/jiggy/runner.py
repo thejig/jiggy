@@ -113,4 +113,20 @@ class SequentialRunner(Runner):
 
     def run(self):
         """Abstract runner for Sequential."""
+
+        logo = """
+   __     __     ______     ______     __  __    
+  /\ \   /\ \   /\  ___\   /\  ___\   /\ \_\ \   
+ _\_\ \  \ \ \  \ \ \__ \  \ \ \__ \  \ \____ \  
+/\_____\  \ \_\  \ \_____\  \ \_____\  \/\_____\ 
+\/_____/   \/_/   \/_____/   \/_____/   \/_____/ 
+        """
+
+        print(logo)
+        print("Name: \t\t", self.pipeline.name)
+        print("Author: \t", self.pipeline.author)
+        print("Description: \t", self.pipeline.description)
+        print("Version: \t", self.pipeline.version)
+        print("\n")
+
         return self.main()
