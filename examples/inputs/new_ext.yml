@@ -1,0 +1,79 @@
+name: Gets todays date, then finds weekday
+author: xyz@company.com
+description: Creates a database, gets a date, gets first letter of weekday
+version: 0.0.1
+
+pipeline:
+  runner: sequential
+  secrets:
+    location: examples/secrets/.env-example
+    source: jiggy.EnvSecrets
+  tasks:
+
+  - name: print-somethin
+    description: Print something
+    function:
+      source: examples.utils.string_manipulation.PrintThis
+      params:
+      - type: str
+        value: 'THIS PIPELINE IS BONKERS'
+      output: null
+    requires: null
+
+  - name: print-somethin-2
+    description: Print something
+    function:
+      source: examples.utils.string_manipulation.PrintThis
+      params:
+      - type: str
+        value: 'THIS PIPELINE IS BONKERS'
+      output: null
+    requires: print-somethin-3
+
+  - name: print-somethin-3
+    description: Print something
+    function:
+      source: examples.utils.string_manipulation.PrintThis
+      params:
+      - type: str
+        value: 'THIS PIPELINE IS BONKERS'
+      output: null
+    requires: null
+
+  - name: get-current-date
+    description: Gets todays date
+    function:
+      source: examples.utils.dates.GetDateTask
+      params: null
+      output:
+      - id: today-date
+        type: datetime
+    requires: print-somethin-2
+
+  - name: get-first-letter
+    description: Gets today's weekday letter
+    function:
+      source: examples.utils.dates.GetFirstLetter
+      params:
+      - type: str
+        value: weekday
+        dependency: get-weekday
+      - type: int
+        value: 4
+      output:
+      - id: letter
+        type: str
+    requires: print-somethin
+
+  - name: get-weekday
+    description: Gets today's weekday
+    function:
+      source: examples.utils.dates.GetWeekdayTask
+      params:
+      - type: datetime
+        value: today-date
+        dependency: get-current-date
+      output:
+      - id: weekday
+        type: str
+    requires: null

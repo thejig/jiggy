@@ -9,6 +9,7 @@ pipeline:
     location: examples/secrets/.env-example
     source: jiggy.EnvSecrets
   tasks:
+
   - name: get-current-date
     description: Gets todays date
     function:
@@ -17,7 +18,8 @@ pipeline:
       output:
       - id: today-date
         type: datetime
-    requires: null
+    requires: print-somethin
+
   - name: get-weekday
     description: Gets today's weekday
     function:
@@ -30,6 +32,7 @@ pipeline:
       - id: weekday
         type: str
     requires: null
+
   - name: get-first-letter
     description: Gets today's weekday letter
     function:
@@ -44,6 +47,7 @@ pipeline:
       - id: letter
         type: str
     requires: null
+
   - name: print-somethin
     description: Print something
     function:
@@ -53,6 +57,7 @@ pipeline:
         value: 'THIS PIPELINE IS BONKERS'
       output: null
     requires: null
+
   - name: lower-text
     description: Takes capitalized letters and lowers them
     function:
@@ -66,4 +71,4 @@ pipeline:
       output:
       - id: finalized
         type: str
-    requires: print-somethin
+    requires: null

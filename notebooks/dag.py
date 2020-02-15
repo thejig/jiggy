@@ -1,44 +1,49 @@
-"""Create JAG Object."""
-from collections import OrderedDict
-from collections import deque
 from copy import copy, deepcopy
-from itertools import chain
+from collections import deque
 
-from typing import Any
+try:
+    from collections import OrderedDict
+except ImportError:
+    print('got here')
+    from ordereddict import OrderedDict
 
-from src.jiggy.pipeline import Pipeline
-from src.jiggy.task import Node
 
+class DAG(object):
+    """ Directed acyclic graph implementation. """
 
-class Manager(object):
-    """DAG creation/association mechanism."""
-
-    library = dict()
-
-    def __init__(self, pipeline: Pipeline):
+    def __init__(self):
+        """ Construct a new DAG with no nodes or edges. """
         self.reset_graph()
-        self.pipeline = pipeline
 
-    @property
-    def order(self):
-        return self.topological_sort()[::-1]
-
-    def register_node(self, node):
-        """Register node in library."""
-        self.library.update({node.name: node})
-
-    def add_node(self, node, graph=None):
+    def add_node(self, node_name, graph=None):
         """ Add a node if it does not exist yet, or error out. """
         if not graph:
             graph = self.graph
-        if node.name in graph:
-            raise KeyError('node %s already exists' % node.name)
+        if node_name in graph:
+            raise KeyError('node %s already exists' % node_name)
+        graph[node_name] = set()
 
-        graph[node.name] = set()
-
-    def add_node_if_not_exists(self, node, graph=None):
+    def add_node_if_not_exists(self, node_name, graph=None):
         try:
-            self.add_node(node, graph=graph)
+            self.add_node(node_name, graph=graph)
+        except KeyError:
+            pass
+
+    def delete_node(self, node_name, graph=None):
+        """ Deletes this node and all edges referencing it. """
+        if not graph:
+            graph = self.graph
+        if node_name not in graph:
+            raise KeyError('node %s does not exist' % node_name)
+        graph.pop(node_name)
+
+        for node, edges in graph.items():
+            if node_name in edges:
+                edges.remove(node_name)
+
+    def delete_node_if_exists(self, node_name, graph=None):
+        try:
+            self.delete_node(node_name, graph=graph)
         except KeyError:
             pass
 
@@ -54,7 +59,30 @@ class Manager(object):
         if is_valid:
             graph[ind_node].add(dep_node)
         else:
-            raise Exception('FUCK YOU')
+            raise DAGValidationError()
+
+    def delete_edge(self, ind_node, dep_node, graph=None):
+        """ Delete an edge from the graph. """
+        if not graph:
+            graph = self.graph
+        if dep_node not in graph.get(ind_node, []):
+            raise KeyError('this edge does not exist in graph')
+        graph[ind_node].remove(dep_node)
+
+    def rename_edges(self, old_task_name, new_task_name, graph=None):
+        """ Change references to a task in existing edges. """
+        if not graph:
+            graph = self.graph
+        for node, edges in graph.items():
+
+            if node == old_task_name:
+                graph[new_task_name] = copy(edges)
+                del graph[old_task_name]
+
+            else:
+                if old_task_name in edges:
+                    edges.remove(old_task_name)
+                    edges.add(new_task_name)
 
     def predecessors(self, node, graph=None):
         """ Returns a list of all predecessors of the given node """

@@ -77,6 +77,8 @@ class SequentialRunner(Runner):
             output = None
             state = State.FAILED
 
+        print(output)
+
         return state, output
 
     def _execute(self, pkg: str, mdl: str, node: Node, inputs=None):
