@@ -5,6 +5,9 @@ from typing import Union
 class Node(dict):
     """Task Object for initializer."""
 
+    got = None
+    state = None
+
     def __init__(self, data):
         """Constructor for Node."""
         super(Node, self).__init__(data)
