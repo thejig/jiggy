@@ -34,6 +34,14 @@ class GetRandomNumber(Task):
         return random.randint(0, 100)
 
 
+class PrintNumber(Task):
+    def __init__(self, name):
+        self._name = name
+
+    def run(self, x):
+        print(x)
+
+
 class PersistDatabase(Task):
     def __init__(self, name):
         self._name = name

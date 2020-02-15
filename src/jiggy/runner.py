@@ -80,7 +80,7 @@ class SequentialRunner(Runner):
                 output = init_cls.run()
             state = State.SUCCESS
         except Exception as exc:
-            print(exc)
+            print(init_cls, exc)
             output = None
             state = State.FAILED
 

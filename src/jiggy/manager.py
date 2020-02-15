@@ -141,7 +141,8 @@ class Manager(object):
                     if param.get("dependency") in set(self.library.keys()):
                         upstreams.add(param.get("dependency"))
             if task.requires:
-                upstreams.add(task.requires)
+                for req in task.requires:
+                    upstreams.add(req)
 
             if upstreams:
                 for x in upstreams:
