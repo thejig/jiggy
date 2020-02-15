@@ -5,7 +5,7 @@ from typing import Union
 class Node(dict):
     """Task Object for initializer."""
 
-    foutput = None
+    got = None
     state = None
 
     def __init__(self, data):

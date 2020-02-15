@@ -15,6 +15,9 @@ class Runner:
         self.path = path
         self.pipeline = Pipeline(path)
         self.dag = Manager(self.pipeline)
+        for task in self.pipeline.tasks:
+            self.dag.register_node(Node(task))
+
         self.secrets = Secrets(self.pipeline)
         self.state = []
 
@@ -43,15 +46,18 @@ class SequentialRunner(Runner):
 
         outputs = {}
 
-        for node in self.dag.order:
+        for node_name in self.dag.something():
+            node = self.dag.library.get(node_name)
             pkg, mdl = self._parse_import(node.source)
-
             state, executed = self._execute(
-                pkg=pkg, mdl=mdl, node=node, inputs=outputs,
+                pkg=pkg, mdl=mdl, node=node, inputs=self.dag.library[self.dag.order[self.dag.order.index(node_name)-1]].got,
             )
+            node.got = executed
 
-            outputs.update({node.name: executed})
-            self.state.append("Task: `{}` -> {}".format(node.name, state))
+            print(node.got)
+
+            outputs.update({node.name: node.got})
+            self.state.append("Task: `{}` -> {}".format(node, state))
 
         return self.state
 
@@ -73,12 +79,12 @@ class SequentialRunner(Runner):
             else:
                 output = init_cls.run()
             state = State.SUCCESS
-        except Exception:
+        except Exception as exc:
+            print(exc)
             output = None
             state = State.FAILED
 
-        print(output)
-
+        import pdb; pdb.set_trace()
         return state, output
 
     def _execute(self, pkg: str, mdl: str, node: Node, inputs=None):
@@ -88,13 +94,17 @@ class SequentialRunner(Runner):
         init_cls = cls(node.name)
 
         if inputs:
-            for param in node.params:
-                if param.get("dependency") in inputs.keys():
-                    arguments.append(inputs[param.get("dependency")])
-                elif not param.get("dependency"):
-                    arguments.append(param.get("value"))
-                else:
-                    continue
+            # for x in inputs:
+            arguments.append(inputs)
+            # import pdb; pdb.set_trace()
+            # for param in node.params:
+                # if param.get("dependency") in inputs.keys():
+                #     arguments.append(inputs[param.get("dependency")])
+                # elif not param.get("dependency"):
+                #     arguments.append(param.get("value"))
+                # else:
+                #     continue
+
 
         state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
 
@@ -103,3 +113,8 @@ class SequentialRunner(Runner):
     def run(self):
         """Abstract runner for Sequential."""
         return self.main()
+
+if __name__ == '__main__':
+    client = SequentialRunner(path="examples/inputs/no_ext.yml").run()
+
+    import pdb; pdb.set_trace()

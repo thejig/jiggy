@@ -23,7 +23,7 @@ class Manager(object):
     def order(self):
         return self.topological_sort()[::-1]
 
-    def register_node(self, node):
+    def register_node(self, node: Node):
         """Register node in library."""
         self.library.update({node.name: node})
 
@@ -137,6 +137,25 @@ class Manager(object):
         except ValueError:
             return (False, 'failed topological sort')
         return (True, 'valid')
+
+
+    def something(self):
+        for task_name, task in self.library.items():
+            self.add_node_if_not_exists(task)
+            upstreams = set()
+            if task.params:
+                for param in task.params:
+                    if param.get('dependency') in set(self.library.keys()):
+                        upstreams.add(param.get('dependency'))
+            if task.requires:
+                upstreams.add(task.requires)
+
+            if upstreams:
+                for x in upstreams:
+                    self.add_node_if_not_exists(self.library.get(x))
+                    self.add_edge(task.name, x)
+
+        return self.topological_sort()[::-1]
 
     def topological_sort(self, graph=None):
         """ Returns a topological ordering of the DAG.
