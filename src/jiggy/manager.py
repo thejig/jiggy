@@ -10,7 +10,6 @@ from src.jiggy.task import Node
 
 class Manager(object):
     """DAG creation/association mechanism."""
-
     library = {}
 
     def __init__(self, pipeline: Pipeline):
@@ -133,7 +132,7 @@ class Manager(object):
             return (False, "failed topological sort")
         return (True, "valid")
 
-    def something(self):
+    def associate(self):
         for task_name, task in self.library.items():
             self.add_node_if_not_exists(task)
             upstreams = set()

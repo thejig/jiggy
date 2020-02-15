@@ -47,18 +47,17 @@ class SequentialRunner(Runner):
         """Runner for Jiggy Pipeline."""
 
         outputs = {}
-        for node_name in self.dag.something():
+        for node_name in self.dag.associate():
             node = self.dag.library.get(node_name)
             pkg, mdl = self._parse_import(node.source)
             state, executed = self._execute(
                 pkg=pkg,
                 mdl=mdl,
                 node=node,
-                inputs=self.dag.library[
-                    self.dag.order[self.dag.order.index(node_name) - 1]
-                ].got,
+                inputs=outputs
             )
             node.got = executed
+            node.state = state
 
             outputs.update({node.name: node.got})
             self.state.append("Task: `{}` -> {}".format(node, state))
@@ -83,7 +82,7 @@ class SequentialRunner(Runner):
             else:
                 output = init_cls.run()
             state = State.SUCCESS
-        except Exception as exc:
+        except Exception:
             output = None
             state = State.FAILED
 
@@ -95,18 +94,19 @@ class SequentialRunner(Runner):
         cls = getattr(import_module(pkg), mdl)
         init_cls = cls(node.name)
 
-        if inputs:
-            arguments.append(inputs)
+        # if inputs:
+        #     arguments.append(inputs)
 
         if node.params:
             for param in node.params:
-                if not param.get("dependency"):
+                dependency = param.get("dependency")
+                if dependency:
+                    arguments.append(inputs.get(dependency))
+
+                elif not dependency:
                     arguments.append(param.get("value"))
-                else:
-                    continue
 
         state, output = self.__cls_run(init_cls=init_cls, arguments=arguments)
-        # self.dag.library[node.name] = output
 
         return state, output
 
