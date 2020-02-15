@@ -114,9 +114,3 @@ class SequentialRunner(Runner):
     def run(self):
         """Abstract runner for Sequential."""
         return self.main()
-
-
-if __name__ == "__main__":
-    myrun = SequentialRunner(path="examples/inputs/file_ext.yml").run()
-
-    import pdb; pdb.set_trace()
