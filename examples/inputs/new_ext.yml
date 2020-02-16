@@ -28,7 +28,8 @@ pipeline:
       - type: str
         value: 'THIS PIPELINE IS BONKERS 2'
       output: null
-    requires: print-somethin-3
+    requires:
+      - print-somethin-3
 
   - name: print-somethin-3
     description: Print something
@@ -48,7 +49,8 @@ pipeline:
       output:
         id: today-date
         type: datetime.datetime
-    requires: print-somethin-2
+    requires:
+      - print-somethin-2
 
   - name: get-first-letter
     description: Gets today's weekday letter
@@ -63,7 +65,8 @@ pipeline:
       output:
         id: letter
         type: str
-    requires: print-somethin
+    requires:
+      - print-somethin
 
   - name: get-weekday
     description: Gets today's weekday

@@ -18,7 +18,8 @@ pipeline:
       output:
         id: today-date
         type: datetime.datetime
-    requires: print-somethin
+    requires:
+      - print-somethin
 
   - name: get-weekday
     description: Gets today's weekday
