@@ -4,7 +4,7 @@ from src.jiggy.task import Task
 
 class GetDateTask(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
         super(GetDateTask, self).__init__(name)
 
     def run(self):
@@ -13,7 +13,7 @@ class GetDateTask(Task):
 
 class GetWeekdayTask(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
         super(GetWeekdayTask, self).__init__(name)
 
     def run(self, x):
@@ -22,7 +22,7 @@ class GetWeekdayTask(Task):
 
 class GetFirstLetter(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
         super(GetFirstLetter, self).__init__(name)
 
     def run(self, x, y):
