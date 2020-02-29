@@ -1,6 +1,9 @@
 """Jiggy Runner methods."""
 from importlib import import_module
 
+from jpl import JiggyPlaybookLint
+
+from jiggy.error import JiggyPlaybookError
 from jiggy.inspector import Inspector
 from jiggy.manager import Manager
 from jiggy.pipeline import Pipeline
@@ -15,6 +18,13 @@ class Runner:
     def __init__(self, path: str):
         """Constructor for Runner."""
         self.path = path
+        self.jpl = JiggyPlaybookLint(path=path)
+
+        self._is_valid, self._errors = self.jpl.validate()
+
+        if not self._is_valid:
+            raise JiggyPlaybookError(self._errors)
+
         self.pipeline = Pipeline(path)
         self.dag = Manager(self.pipeline)
 

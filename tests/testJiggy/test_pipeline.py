@@ -1,7 +1,7 @@
 """Test Manager Classes."""
 from unittest import TestCase
 
-from src.jiggy.pipeline import Pipeline
+from jiggy.pipeline import Pipeline
 
 
 class TestPipeline(TestCase):
