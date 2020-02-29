@@ -1,12 +1,12 @@
 """Jiggy Runner methods."""
 from importlib import import_module
 
-from src.jiggy.inspector import Inspector
-from src.jiggy.manager import Manager
-from src.jiggy.pipeline import Pipeline
-from src.jiggy.state import State
-from src.jiggy.secrets import Secrets
-from src.jiggy.task import Node
+from jiggy.inspector import Inspector
+from jiggy.manager import Manager
+from jiggy.pipeline import Pipeline
+from jiggy.state import State
+from jiggy.secrets import Secrets
+from jiggy.task import Node
 
 
 class Runner:

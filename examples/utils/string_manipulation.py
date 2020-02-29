@@ -3,7 +3,7 @@ from src.jiggy.task import Task
 
 class LowerText(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
         super(LowerText, self).__init__(name)
 
     def run(self, x, y):
@@ -12,7 +12,7 @@ class LowerText(Task):
 
 class PrintThis(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
         super(PrintThis, self).__init__(name)
 
     def run(self, x):

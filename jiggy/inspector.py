@@ -1,7 +1,7 @@
 """Inspector Module."""
 import datetime  # noqa pylint: disable=unused-import
 
-from src.jiggy.task import Node
+from jiggy.task import Node
 
 from typing import Any
 

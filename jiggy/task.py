@@ -44,6 +44,12 @@ class Node(dict):
         return function.get("params", []) if function else None
 
     @property
+    def config(self) -> list:
+        """Assign `task.function.params` property."""
+        function = self.function
+        return function.get("config", []) if function else None
+
+    @property
     def output(self) -> dict:
         """Assign `task.output` property."""
         function = self.function

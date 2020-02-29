@@ -6,7 +6,7 @@ from src.jiggy.task import Task
 
 class CreateTable(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
 
     def run(self):
 
@@ -28,7 +28,7 @@ class CreateTable(Task):
 
 class GetRandomNumber(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
 
     def run(self):
         return random.randint(0, 100)
@@ -36,7 +36,7 @@ class GetRandomNumber(Task):
 
 class PrintNumber(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
 
     def run(self, x):
         print(x)
@@ -44,7 +44,7 @@ class PrintNumber(Task):
 
 class PersistDatabase(Task):
     def __init__(self, name):
-        self._name = name
+        self.name = name
 
     def run(self, x):
 

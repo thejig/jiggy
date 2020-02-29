@@ -1,0 +1,20 @@
+name: create a database with table
+author: me@jiggy.dev
+description: Create a database with a table
+version: 0.0.1
+
+pipeline:
+  runner: sequential
+  secrets:
+    location: .env
+    source: jiggy.EnvSecrets
+  tasks:
+  - name: create-table
+    description: Create table
+    function:
+      source: jiggy.SQLiteExecute
+      config:
+        db_path: example.db
+        query: 'CREATE TABLE IF NOT EXISTS dummy (id INTEGER PRIMARY KEY)'
+      output: null
+    requires: null
