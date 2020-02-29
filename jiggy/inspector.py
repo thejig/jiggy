@@ -1,21 +1,14 @@
 """Inspector Module."""
 import datetime  # noqa pylint: disable=unused-import
 
+from jiggy.error import (
+    InspectorOutputException,
+    InspectorParamException
+)
+
 from jiggy.task import Node
 
 from typing import Any
-
-
-class InspectorParamException(Exception):
-    """Inspector Exception for param type mismatch"""
-
-    pass
-
-
-class InspectorOutputException(Exception):
-    """Inspector Exception for output type mismatch"""
-
-    pass
 
 
 class Inspector(object):
@@ -32,11 +25,7 @@ class Inspector(object):
     def inspect_param(self, param: dict, received: Any):
         """Inspector helper for input and type."""
         if not isinstance(received, eval(param.get("type"))):
-            raise InspectorParamException(
-                "{} parameter: {} does not match declared type: {}".format(
-                    self._node, received, param.get("type")
-                )
-            )
+            raise InspectorParamException(self._node, received, param.get("type"))
 
         return received
 
@@ -46,10 +35,6 @@ class Inspector(object):
             return None
 
         if not isinstance(fout, eval(node.output.get("type"))):
-            raise InspectorOutputException(
-                "{} function output: {} does not match declared type: {}".format(
-                    self._node, fout, node.output.get("type")
-                )
-            )
+            raise InspectorOutputException(self._node, fout, node.output.get("type"))
 
         return fout

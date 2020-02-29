@@ -31,7 +31,7 @@ pipeline:
   - name: print-number
     description: Prints the random number
     function:
-      source: examples.utils.db.PrintNumber
+      source: examples.utils.db.PrintNumberd
       params:
       - type: int
         value: number
