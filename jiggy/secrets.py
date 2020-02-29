@@ -6,7 +6,7 @@ import dotenv
 import yaml
 from pathlib import Path
 
-from src.jiggy.pipeline import Pipeline
+from jiggy.pipeline import Pipeline
 
 
 # TODO: make a `JiggyException` superclass and `NotFoundError` a subclass

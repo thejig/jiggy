@@ -1,6 +1,6 @@
 import sqlite3
 
-from src.jiggy.task import Task
+from jiggy.task import Task
 
 
 class SQLiteFetch(Task):

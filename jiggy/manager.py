@@ -4,8 +4,8 @@ from collections import deque
 from copy import deepcopy
 
 
-from src.jiggy.pipeline import Pipeline
-from src.jiggy.task import Node
+from jiggy.pipeline import Pipeline
+from jiggy.task import Node
 
 
 class Manager(object):
