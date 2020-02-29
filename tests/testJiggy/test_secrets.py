@@ -1,8 +1,8 @@
 """Test Manager Classes."""
 from unittest import TestCase
 
-from src.jiggy.pipeline import Pipeline
-from src.jiggy.secrets import Secrets
+from jiggy.pipeline import Pipeline
+from jiggy.secrets import Secrets
 
 
 class TestEnvSecrets(TestCase):
